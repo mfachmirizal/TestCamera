@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+   <!-- NOT SO IMPORTANT CUSTOM UI STUFF -->
+    <ImageView
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/textView"
+        android:id="@+id/thumbImg"
+        android:baselineAlignBottom="false"
+        android:background="#FF1418FF" />
+
+     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Path Image"
+        android:id="@+id/textView"
+         android:textColor="@color/tabsScrollColor"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView"
+        android:id="@+id/tombolKamera"
+        android:text="Kamera"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload"
+        android:id="@+id/tombolUpload"
+        android:layout_below="@+id/tombolKamera"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tombolUpload"
+        android:id="@+id/thumbImgUpload"
+        android:background="#1418ff" />
+
+
+</RelativeLayout>
