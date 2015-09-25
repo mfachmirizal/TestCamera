@@ -70,6 +70,8 @@ public class Tab1 extends Fragment {
                 if (imagepath != null) {
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
+                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/openbravotripad/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+
                     getActivity().getApplicationContext().startService(uploadimageIntent);
                 }
                 else {
@@ -118,8 +120,9 @@ public class Tab1 extends Fragment {
 
 
             String reponseMessage = (String) extras.get(UploadImageIntentService.RESPONSE_MESSAGE);
+            int reponseStatusCode = (int) extras.get(UploadImageIntentService.RESPONSE_STATUS_CODE);
 
-            if (reponseMessage.length() == 0) {
+            if (reponseStatusCode == 200) {
                 String responseBitmapPath = (String) extras.get(UploadImageIntentService.RESPONSE_BITMAP_PATH);
 
                 thumbImgUpload.setImageBitmap(new UtilitasGambar().ambilBitmap(responseBitmapPath));
