@@ -57,7 +57,7 @@ public class UploadImageIntentService  extends IntentService{
             client.post(requestServerUrl, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    responseMessage = "Failure ("+statusCode+") ("+requestServerUrl+") : "+responseString;
+                    responseMessage = "Failure. ("+statusCode+") ("+requestServerUrl+") : "+responseString;
                     status_code = statusCode;
                 }
 

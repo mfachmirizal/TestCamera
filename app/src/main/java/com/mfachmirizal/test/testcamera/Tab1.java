@@ -126,6 +126,7 @@ public class Tab1 extends Fragment {
                 String responseBitmapPath = (String) extras.get(UploadImageIntentService.RESPONSE_BITMAP_PATH);
 
                 thumbImgUpload.setImageBitmap(new UtilitasGambar().ambilBitmap(responseBitmapPath));
+                Toast.makeText(getActivity().getApplicationContext(), "OKE : "+reponseMessage, Toast.LENGTH_LONG).show();
             }
             else {
                 Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
