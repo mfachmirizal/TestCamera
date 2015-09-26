@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBarUpload"
         android:visibility="visible"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/tombolKamera"
         android:layout_centerHorizontal="true" />
 

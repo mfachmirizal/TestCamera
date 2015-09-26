@@ -55,6 +55,8 @@ public class Tab1 extends Fragment {
         receiver = new UploadImageReceiver();
         getActivity().getApplicationContext().registerReceiver(receiver, filter);
 
+        progressBarUpload.setVisibility(View.GONE);
+
         tombolKamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +73,7 @@ public class Tab1 extends Fragment {
             public void onClick(View v) {
                 if (imagepath != null) {
                     progressBarUpload.setVisibility(View.VISIBLE);
+                    tombolUpload.setVisibility(View.GONE);
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/openbravotripad/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
@@ -136,6 +139,7 @@ public class Tab1 extends Fragment {
             }
 
             progressBarUpload.setVisibility(View.GONE);
+            tombolUpload.setVisibility(View.VISIBLE);
         }
 
 
