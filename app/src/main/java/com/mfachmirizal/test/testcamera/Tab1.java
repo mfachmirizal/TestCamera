@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.loopj.android.http.*;
@@ -34,6 +35,7 @@ public class Tab1 extends Fragment {
     ImageView thumbImgUpload;
     TextView textView;
     ImageView thumbImgTab2;
+    ProgressBar progressBarUpload;
 
     private UploadImageReceiver receiver;
 
@@ -46,7 +48,7 @@ public class Tab1 extends Fragment {
         thumbImg     =  (ImageView)v.findViewById(R.id.thumbImg);
         thumbImgUpload = (ImageView)v.findViewById(R.id.thumbImgUpload);
         textView = (TextView)v.findViewById(R.id.textView);
-        thumbImgTab2 = (ImageView)v.findViewById(R.id.thumbImgTab2);
+        progressBarUpload = (ProgressBar) v.findViewById(R.id.progressBarUpload);
 
         IntentFilter filter = new IntentFilter(UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -68,6 +70,7 @@ public class Tab1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if (imagepath != null) {
+                    progressBarUpload.setVisibility(View.VISIBLE);
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/openbravotripad/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
@@ -132,6 +135,7 @@ public class Tab1 extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
             }
 
+            progressBarUpload.setVisibility(View.GONE);
         }
 
 
