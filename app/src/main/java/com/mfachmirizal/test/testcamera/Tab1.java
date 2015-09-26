@@ -55,13 +55,12 @@ public class Tab1 extends Fragment {
         receiver = new UploadImageReceiver();
         getActivity().getApplicationContext().registerReceiver(receiver, filter);
 
-        progressBarUpload.setVisibility(View.GONE);
+        //progressBarUpload.setVisibility(View.GONE);
+        uploadStateWidget(false);
 
         tombolKamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-
                 Intent toCamera =  new Intent(getActivity().getApplicationContext(), CameraActivity.class);
                 toCamera.putExtra(CameraActivity.IS_ACTION_VIEW, false);
                 startActivityForResult(toCamera,CameraActivity.OPEN_CAMERA_CAPTURE);
@@ -72,11 +71,10 @@ public class Tab1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if (imagepath != null) {
-                    progressBarUpload.setVisibility(View.VISIBLE);
-                    tombolUpload.setVisibility(View.GONE);
+                    uploadStateWidget(true);
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
-                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/openbravotripad/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
 
                     getActivity().getApplicationContext().startService(uploadimageIntent);
                 }
@@ -138,8 +136,7 @@ public class Tab1 extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
             }
 
-            progressBarUpload.setVisibility(View.GONE);
-            tombolUpload.setVisibility(View.VISIBLE);
+            uploadStateWidget(false);
         }
 
 
@@ -149,6 +146,18 @@ public class Tab1 extends Fragment {
     public void onDestroy() {
         getActivity().getApplicationContext().unregisterReceiver(receiver);
         super.onDestroy();
+    }
+
+    //custom method
+    private void uploadStateWidget(boolean p) {
+        if (p) {
+            progressBarUpload.setVisibility(View.VISIBLE);
+            tombolUpload.setVisibility(View.INVISIBLE);
+        }
+        else {
+            progressBarUpload.setVisibility(View.INVISIBLE);
+            tombolUpload.setVisibility(View.VISIBLE);
+        }
     }
 
 }

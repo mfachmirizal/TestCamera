@@ -69,8 +69,8 @@ public class CameraActivity extends AppCompatActivity {
 
 
             //setResult(RESULT_OK, intentToBack);
-            finish();
         }
+        finish();
     }
 
 /*
