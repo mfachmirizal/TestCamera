@@ -47,27 +47,29 @@ public class UploadImageIntentService  extends IntentService{
         try {
 
             SyncHttpClient client = new SyncHttpClient();
+            client.setTimeout(50);
+//            client.setBasicAuth("Openbravo","openbravo");
             RequestParams params = new RequestParams();
             params.put("l", "Openbravo");
             params.put("p", "openbravo");
             params.put("cl", "4028E6C72959682B01295A070852010D");
-            params.put("or", "0");
-            //params.put("image", new File(imagePath));
+//            params.put("or", "0");
+//            params.put("image", new File(requestBitmapPath));
 
             client.post(requestServerUrl, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    responseMessage = "Failure. ("+statusCode+") ("+requestServerUrl+") : "+responseString;
+                    throwable.printStackTrace();
+                    responseMessage = "Failure. (" + statusCode + ") (" + requestServerUrl + ") : " + throwable.getMessage();
                     status_code = statusCode;
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    responseMessage =  "Success ("+statusCode+") : "+responseString;
+                    responseMessage = "Success (" + statusCode + ") : " + responseString;
                     status_code = statusCode;
                 }
             });
-
 
 
         }catch (Exception e) {

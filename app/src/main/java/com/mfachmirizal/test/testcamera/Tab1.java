@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.loopj.android.http.*;
 import com.mfachmirizal.test.testcamera.backgroundprocess.UploadImageIntentService;
 import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
-
+import java.io.File;
 /**
  * Created by Fachmi on 15/02/2015.
  */
@@ -135,7 +135,6 @@ public class Tab1 extends Fragment {
             else {
                 Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
             }
-
             uploadStateWidget(false);
         }
 
@@ -159,5 +158,6 @@ public class Tab1 extends Fragment {
             tombolUpload.setVisibility(View.VISIBLE);
         }
     }
+
 
 }

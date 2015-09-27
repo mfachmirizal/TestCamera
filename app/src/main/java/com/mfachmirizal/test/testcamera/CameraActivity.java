@@ -100,6 +100,7 @@ public class CameraActivity extends AppCompatActivity {
                         Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
+            Log.e("photoFileKosong","photoFileKosong, mengulang proses ambil gambar");
         }
     }
 
@@ -109,7 +110,7 @@ public class CameraActivity extends AppCompatActivity {
     private File createImageFile(boolean isActionView) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp +"Fachmi"+ "_";
+        String imageFileName = /*timeStamp +*/"TTGSecurity";
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
