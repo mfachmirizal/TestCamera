@@ -22,6 +22,7 @@ android {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+        exclude 'httpclient'
     }
 }
 
@@ -29,4 +30,13 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.loopj.android:android-async-http:1.4.8'
+    compile files('httpmime-4.5.1.jar')
+//    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
+
+//    compile('org.apache.httpcomponents:httpmime:4.3.6') {
+//        exclude module: 'httpclient'
+//    }
+//     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+//    compile files('httpcore-4.4.3.jar')
+//    compile files('httpclient-4.5.1.jar')
 }

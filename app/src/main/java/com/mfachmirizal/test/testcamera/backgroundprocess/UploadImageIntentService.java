@@ -2,7 +2,20 @@ package com.mfachmirizal.test.testcamera.backgroundprocess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import org.apache.http.Header;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +25,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import com.loopj.android.http.*;
 import com.mfachmirizal.test.testcamera.Tab1;
+import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
 
 public class UploadImageIntentService  extends IntentService{
 
@@ -42,8 +56,26 @@ public class UploadImageIntentService  extends IntentService{
 
         String responseBitmapPath = requestBitmapPath;
 
+        //upload1
+        //upload1(requestBitmapPath);
+
+        //upload2
+        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
+        upload2(requestServerUrl,bmp,"upload");
 
 
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Tab1.UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, responseBitmapPath);
+        broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);
+        broadcastIntent.putExtra(RESPONSE_STATUS_CODE, status_code);
+        sendBroadcast(broadcastIntent);
+
+    }
+
+    protected void upload1(String requestBitmapPath) {
         try {
 
             SyncHttpClient client = new SyncHttpClient();
@@ -76,16 +108,44 @@ public class UploadImageIntentService  extends IntentService{
             e.printStackTrace();
             responseMessage = e.getMessage();
         }
-
-
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(Tab1.UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, responseBitmapPath);
-        broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);
-        broadcastIntent.putExtra(RESPONSE_STATUS_CODE, status_code);
-        sendBroadcast(broadcastIntent);
-
     }
+
+    protected void upload2(String url,Bitmap bm,String namafile) {
+        HttpPost httppost = new HttpPost(url);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        //MultipartEntityBuilder entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        if(bm!=null){
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 75, bos);
+            byte[] data = bos.toByteArray();
+            ByteArrayBody bab = new ByteArrayBody(data, namafile+".jpg");
+            builder.addPart("file", bab);
+        }
+        try {
+            StringBody suser = new StringBody("Openbravo", ContentType.TEXT_PLAIN);
+            builder.addPart("l", suser);
+
+            StringBody spass = new StringBody("openbravo", ContentType.TEXT_PLAIN);
+            builder.addPart("p", spass);
+
+
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        httppost.setEntity(builder.build());
+        try {
+            httpClient.execute(httppost);
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }/**/
 
 }

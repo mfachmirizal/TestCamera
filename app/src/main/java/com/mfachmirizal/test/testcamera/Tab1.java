@@ -74,7 +74,8 @@ public class Tab1 extends Fragment {
                     uploadStateWidget(true);
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
-                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+                    //uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.1:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.10:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
 
                     getActivity().getApplicationContext().startService(uploadimageIntent);
                 }
