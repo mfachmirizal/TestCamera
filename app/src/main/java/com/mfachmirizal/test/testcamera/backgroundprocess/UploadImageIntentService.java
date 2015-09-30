@@ -5,16 +5,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.http.HttpHeaders;
+//import org.apache.http.HttpHeaders;
 //import org.apache.http.client.ClientProtocolException;
 //import org.apache.http.client.HttpClient;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPostHC4;
-
-import org.apache.http.client.methods.HttpPostHC4;
-import org.apache.http.entity.ContentType;
+//import org.apache.http.client.methods.HttpPostHC4;
+//
+//import org.apache.http.client.methods.HttpPostHC4;
+//import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -65,8 +65,8 @@ public class UploadImageIntentService  extends IntentService{
         //upload1(requestBitmapPath);
 
         //upload2
-        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
-        upload2(requestServerUrl,bmp,"upload");
+//        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
+//        upload2(requestServerUrl,bmp,"upload");
 
 
 
@@ -115,7 +115,7 @@ public class UploadImageIntentService  extends IntentService{
         }
     }
 /**/
-
+/*
     protected void upload2(String url,Bitmap bm,String namafile) {
         HttpPost httppost = new HttpPost(url);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -152,7 +152,7 @@ public class UploadImageIntentService  extends IntentService{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        /**/
-    }
+
+    }/**/
 
 }
