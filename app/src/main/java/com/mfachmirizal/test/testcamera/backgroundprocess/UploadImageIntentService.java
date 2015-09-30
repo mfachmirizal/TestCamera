@@ -5,9 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
+//import org.apache.http.client.ClientProtocolException;
+//import org.apache.http.client.HttpClient;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPostHC4;
 
 import org.apache.http.client.methods.HttpPostHC4;
 import org.apache.http.entity.ContentType;
@@ -75,7 +79,7 @@ public class UploadImageIntentService  extends IntentService{
         sendBroadcast(broadcastIntent);
 
     }
-
+/*
     protected void upload1(String requestBitmapPath) {
         try {
 
@@ -110,6 +114,7 @@ public class UploadImageIntentService  extends IntentService{
             responseMessage = e.getMessage();
         }
     }
+/**/
 
     protected void upload2(String url,Bitmap bm,String namafile) {
         HttpPost httppost = new HttpPost(url);
@@ -147,6 +152,7 @@ public class UploadImageIntentService  extends IntentService{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }/**/
+        /**/
+    }
 
 }

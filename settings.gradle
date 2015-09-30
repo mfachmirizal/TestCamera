@@ -1,1 +1,4 @@
 include ':app'
+
+include ':module1'
+project(':module1').projectDir = new File(settingsDir, '../app/libs/Module 1')
