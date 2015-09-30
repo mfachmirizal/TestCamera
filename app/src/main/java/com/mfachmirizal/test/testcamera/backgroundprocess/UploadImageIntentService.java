@@ -4,8 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 
-//import org.apache.http.HttpHeaders;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 //import org.apache.http.client.ClientProtocolException;
 //import org.apache.http.client.HttpClient;
 import org.apache.http.client.ClientProtocolException;
@@ -15,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 //
 //import org.apache.http.client.methods.HttpPostHC4;
 //import org.apache.http.entity.ContentType;
+//import org.apache.http.entity.mime.Header;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -30,6 +34,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import com.loopj.android.http.*;
 import com.mfachmirizal.test.testcamera.Tab1;
+import com.mfachmirizal.test.testcamera.util.TetanggakuHttpURLConnection;
 import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
 
 public class UploadImageIntentService  extends IntentService{
@@ -45,6 +50,7 @@ public class UploadImageIntentService  extends IntentService{
     String responseMessage = "";
     int status_code;
     String requestServerUrl;
+    String requestBitmapPath;
 
     public UploadImageIntentService() {
         super("UploadImageIntentService");
@@ -56,18 +62,25 @@ public class UploadImageIntentService  extends IntentService{
         Bundle extras = intent.getExtras();
 
 
-        String requestBitmapPath = (String) extras.get(REQUEST_BITMAP_PATH);
+        requestBitmapPath = (String) extras.get(REQUEST_BITMAP_PATH);
         requestServerUrl = (String) extras.get(REQUEST_SERVER_URL);
 
         String responseBitmapPath = requestBitmapPath;
 
         //upload1
-        //upload1(requestBitmapPath);
+        upload1(requestBitmapPath);
 
         //upload2
 //        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
 //        upload2(requestServerUrl,bmp,"upload");
-
+//        status_code = new TetanggakuHttpURLConnection().uploadFile(requestServerUrl,requestBitmapPath);
+//
+//        if (status_code != 200) {
+//            responseMessage = "Upload Error ! : "+status_code;
+//        }
+//        else {
+//            responseMessage = "Upload Gambar Berhasil !";
+//        }
 
 
         Intent broadcastIntent = new Intent();
@@ -79,19 +92,28 @@ public class UploadImageIntentService  extends IntentService{
         sendBroadcast(broadcastIntent);
 
     }
-/*
+
     protected void upload1(String requestBitmapPath) {
         try {
-
+//            Authenticator.setDefault(new Authenticator() {
+//                @Override
+//                protected PasswordAuthentication getPasswordAuthentication() {
+//                    String LOGIN = "Openbravo";
+//                    String PWD = "openbravo";
+//                    return new PasswordAuthentication(LOGIN, PWD.toCharArray());
+//                }
+//            });
             SyncHttpClient client = new SyncHttpClient();
+            client.setBasicAuth("Openbravo","openbravo");
             client.setTimeout(50);
 //            client.setBasicAuth("Openbravo","openbravo");
             RequestParams params = new RequestParams();
-            params.put("l", "Openbravo");
-            params.put("p", "openbravo");
-            params.put("cl", "4028E6C72959682B01295A070852010D");
+//            params.put("l", "Openbravo");
+//            params.put("p", "openbravo");
+            params.put("psn", "uiiiiiiiiiiiii");
 //            params.put("or", "0");
-//            params.put("image", new File(requestBitmapPath));
+            params.put("gambar", new File(requestBitmapPath));
+
 
             client.post(requestServerUrl, params, new TextHttpResponseHandler() {
                 @Override

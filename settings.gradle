@@ -1,2 +1,1 @@
-include ':module1', ':app'
-project(':module1').projectDir = new File(settingsDir, '../app/libs/Module 1')
+include ':app'
