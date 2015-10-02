@@ -69,7 +69,7 @@ public class UploadImageIntentService  extends IntentService{
 
         //upload1
         upload1(requestBitmapPath);
-
+ 
         //upload2
 //        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
 //        upload2(requestServerUrl,bmp,"upload");
