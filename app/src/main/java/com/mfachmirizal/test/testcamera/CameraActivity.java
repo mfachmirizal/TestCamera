@@ -128,7 +128,7 @@ public class CameraActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED, intentToBack);
         }
         else if (requestCode == RESULT_FIRST_USER) { //1
-            //abaikan, batal capture image
+            //abaikan, batal capture image tanpa pesan apapun
             photoFile.delete();
             setResult(RESULT_FIRST_USER, intentToBack);
         }
