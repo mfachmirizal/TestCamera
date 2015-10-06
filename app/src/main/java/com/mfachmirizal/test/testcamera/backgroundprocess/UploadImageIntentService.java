@@ -42,6 +42,8 @@ public class UploadImageIntentService  extends IntentService{
     public static final String REQUEST_BITMAP = "reqBitmap";
     public static final String REQUEST_SERVER_URL = "reqServerUrl";
     public static final String REQUEST_BITMAP_PATH = "reqBitmapPath";
+    //public static final String REQUEST_BITMAP_NAME = "reqBitmapName";
+
     public static final String RESPONSE_BITMAP = "resBitmap";
     public static final String RESPONSE_BITMAP_PATH = "resBitmapPath";
     public static final String RESPONSE_MESSAGE = "myResponseMessage";
@@ -51,6 +53,7 @@ public class UploadImageIntentService  extends IntentService{
     int status_code;
     String requestServerUrl;
     String requestBitmapPath;
+    String requestBitmapname;
 
     public UploadImageIntentService() {
         super("UploadImageIntentService");
@@ -65,7 +68,6 @@ public class UploadImageIntentService  extends IntentService{
         requestBitmapPath = (String) extras.get(REQUEST_BITMAP_PATH);
         requestServerUrl = (String) extras.get(REQUEST_SERVER_URL);
 
-        String responseBitmapPath = requestBitmapPath;
 
         //upload1
         upload1(requestBitmapPath);
@@ -86,7 +88,7 @@ public class UploadImageIntentService  extends IntentService{
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(Tab1.UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, responseBitmapPath);
+        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, requestBitmapPath);
         broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);
         broadcastIntent.putExtra(RESPONSE_STATUS_CODE, status_code);
         sendBroadcast(broadcastIntent);
@@ -108,10 +110,6 @@ public class UploadImageIntentService  extends IntentService{
             client.setTimeout(50);
 //            client.setBasicAuth("Openbravo","openbravo");
             RequestParams params = new RequestParams();
-//            params.put("l", "Openbravo");
-//            params.put("p", "openbravo");
-            params.put("psn", "uiiiiiiiiiiiii");
-//            params.put("or", "0");
             params.put("gambar", new File(requestBitmapPath));
 
 
@@ -119,8 +117,14 @@ public class UploadImageIntentService  extends IntentService{
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     throwable.printStackTrace();
-                    responseMessage = "Failure. (" + statusCode + ") (" + requestServerUrl + ") : " + throwable.getMessage();
-                    status_code = statusCode;
+                    if (statusCode == 0) {
+                        responseMessage = "Gagal Terhubung Ke server, silahkan hubungi developer Tripad bila masih berlanjut";
+                        status_code = statusCode;
+                    }
+                    else {
+                        responseMessage = "Failure. (" + statusCode + ") (" + requestServerUrl + ") : " + throwable.getMessage();
+                        status_code = statusCode;
+                    }
                 }
 
                 @Override

@@ -24,6 +24,7 @@ import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
 import java.io.File;
 /**
  * Created by Fachmi on 15/02/2015.
+ *
  */
 public class Tab1 extends Fragment {
     //static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -36,6 +37,7 @@ public class Tab1 extends Fragment {
     TextView textView;
     ImageView thumbImgTab2;
     ProgressBar progressBarUpload;
+    File currentPhotoFile;
 
     private UploadImageReceiver receiver;
 
@@ -62,6 +64,7 @@ public class Tab1 extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent toCamera =  new Intent(getActivity().getApplicationContext(), CameraActivity.class);
+                if (currentPhotoFile != null) if (currentPhotoFile.exists()) currentPhotoFile.delete();
                 toCamera.putExtra(CameraActivity.IS_ACTION_VIEW, false);
                 startActivityForResult(toCamera,CameraActivity.OPEN_CAMERA_CAPTURE);
             }
@@ -95,12 +98,13 @@ public class Tab1 extends Fragment {
             if (resultCode == getActivity().RESULT_OK) {
                 //bitmapImage = (Bitmap) extras.get(CameraActivity.GET_BITMAP);
                 imagepath = (String) extras.get(CameraActivity.GET_IMAGE_PATH);
+                currentPhotoFile = (File) extras.get(CameraActivity.GET_PHOTO_FILE);
                 //Toast.makeText(getActivity().getApplicationContext(), fromcamera+" edited", Toast.LENGTH_SHORT).show();
                 //thumbImg.setImageBitmap(bitmapImage);
                 Toast.makeText(getActivity().getApplicationContext(), "Gambar Path : "+imagepath, Toast.LENGTH_LONG).show();
                 textView.setText(imagepath);
                 try {
-                    bitmapImage = new UtilitasGambar().ambilBitmap(imagepath);
+                    bitmapImage = new UtilitasGambar().ambilBitmap(imagepath,0); //defaultnya 90
                     thumbImg.setImageBitmap(bitmapImage);
                     //thumbImgTab2.setImageBitmap(bitmapImage);
                 }
@@ -108,9 +112,12 @@ public class Tab1 extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), "Error : "+exc.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+            else if (resultCode == getActivity().RESULT_FIRST_USER) {
+                //abaikan, batal ambil capture camera
+            }
             else {
-                Toast.makeText(getActivity().getApplicationContext(), "Error Camera Activity : "+
-                        extras.get(CameraActivity.ERROR_MESSAGE).toString(),
+                String msg = (String) extras.get(CameraActivity.ERROR_MESSAGE);
+                Toast.makeText(getActivity().getApplicationContext(), "Error Camera Activity : "+msg,
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -131,9 +138,9 @@ public class Tab1 extends Fragment {
 
             if (reponseStatusCode == 200) {
                 String responseBitmapPath = (String) extras.get(UploadImageIntentService.RESPONSE_BITMAP_PATH);
-
-                thumbImgUpload.setImageBitmap(new UtilitasGambar().ambilBitmap(responseBitmapPath));
-                Toast.makeText(getActivity().getApplicationContext(), "OKE : "+reponseMessage, Toast.LENGTH_LONG).show();
+                thumbImgUpload.setImageBitmap(new UtilitasGambar().ambilBitmap(responseBitmapPath, 0));
+                Toast.makeText(getActivity().getApplicationContext(),reponseMessage, Toast.LENGTH_LONG).show();
+                currentPhotoFile.delete();
             }
             else {
                 Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
@@ -146,6 +153,7 @@ public class Tab1 extends Fragment {
 
     @Override
     public void onDestroy() {
+        if (currentPhotoFile != null) if (currentPhotoFile.exists()) currentPhotoFile.delete();
         getActivity().getApplicationContext().unregisterReceiver(receiver);
         super.onDestroy();
     }

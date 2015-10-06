@@ -26,10 +26,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -40,6 +44,7 @@ public class CameraActivity extends AppCompatActivity {
     public static final String IS_ACTION_VIEW = "IS_ACTION_VIEW";
     public static final String GET_IMAGE_PATH = "imagepath";
     public static final String GET_BITMAP = "bitmapfromcamera";
+    public static final String GET_PHOTO_FILE = "getPhotoFile";
     public static final String ERROR_MESSAGE = "errMessage";
 
 
@@ -86,94 +91,56 @@ public class CameraActivity extends AppCompatActivity {
     {
         String errMessage = "";
         Intent intentToBack=new Intent();
-        if (requestCode == REQUEST_TAKE_PHOTO && photoFile != null && mCurrentPhotoPath != null) // && resultCode == RESULT_OK )
+        if (requestCode == REQUEST_TAKE_PHOTO && photoFile != null && mCurrentPhotoPath != null && resultCode == RESULT_OK ) // && resultCode == RESULT_OK )
         {
             try
             {
-                Bitmap cameraBmp = MediaStore.Images.Media.getBitmap(
-                        this.getContentResolver(),
-                        //.mainActivity.getContentResolver(),
-                        Uri.fromFile(photoFile));
 
-                cameraBmp = ThumbnailUtils.extractThumbnail(cameraBmp, 320, 320);
-                // NOTE incredibly useful trick for cropping/resizing square
-                // http://stackoverflow.com/a/17733530/294884
-
-                Matrix m = new Matrix();
-                m.postRotate( neededRotation(photoFile));
-
-                cameraBmp = Bitmap.createBitmap(cameraBmp,
-                        0, 0, cameraBmp.getWidth(), cameraBmp.getHeight(),
-                        m, true);
+             boolean sukses = new UtilitasGambar().compressAndReplaceJPEG(this,photoFile,70);
+             if (!sukses) {
+                 errMessage = "Compress Image Gagal !";
+                 intentToBack.putExtra(ERROR_MESSAGE,errMessage);
+                 setResult(RESULT_CANCELED, intentToBack);
+                 finish();
+             }
 
 
                 intentToBack.putExtra(GET_IMAGE_PATH, mCurrentPhotoPath);
-                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
+                intentToBack.putExtra(ERROR_MESSAGE, errMessage);
+                intentToBack.putExtra(GET_PHOTO_FILE, photoFile);
                 //intentToBack.putExtra(GET_BITMAP, imageBitmap);
+
                 setResult(RESULT_OK, intentToBack);
 
-                //yourImageView.setImageBitmap(cameraBmp);
-
-                // to convert to bytes...
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                cameraBmp.compress(Bitmap.CompressFormat.JPEG, 75, baos);
-                //or say cameraBmp.compress(Bitmap.CompressFormat.PNG, 0, baos);
-                //imageBytesRESULT = baos.toByteArray();
-
-            } catch (FileNotFoundException e)
-            {
-                errMessage = e.getMessage();
-                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
-                setResult(RESULT_CANCELED, intentToBack);
-                e.printStackTrace();
-                finish();
-            } catch (IOException ie)
+            }  catch (IOException ie)
             {
                 errMessage = ie.getMessage();
-                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
+                intentToBack.putExtra(ERROR_MESSAGE, errMessage);
                 setResult(RESULT_CANCELED, intentToBack);
                 ie.printStackTrace();
                 finish();
             }
             //return;
         }
-        else if (photoFile == null) {
+        else if (photoFile == null || mCurrentPhotoPath == null) {
+            if (photoFile == null) errMessage = "File"; else errMessage="Path";
+            intentToBack.putExtra(ERROR_MESSAGE, errMessage + " Poto null !");
             setResult(RESULT_CANCELED, intentToBack);
-            Toast.makeText(this,"File Poto null !",Toast.LENGTH_SHORT).show();
         }
-        else if (mCurrentPhotoPath == null) {
+        else if (requestCode == RESULT_FIRST_USER) { //1
+            //abaikan, batal capture image
+            photoFile.delete();
+            setResult(RESULT_FIRST_USER, intentToBack);
+        }
+        else  {
+            errMessage = "Error ! : "+requestCode;
+            intentToBack.putExtra(ERROR_MESSAGE, errMessage);
             setResult(RESULT_CANCELED, intentToBack);
-            Toast.makeText(this,"Path Poto null !",Toast.LENGTH_SHORT).show();
         }
         finish();
     }
 
-    private int neededRotation(File ff)
-    {
-        try
-        {
 
-            ExifInterface exif = new ExifInterface(ff.getAbsolutePath());
-            int orientation = exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_270)
-            { return 270; }
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_180)
-            { return 180; }
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90)
-            { return 90; }
-            return 0;
-
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 
 /*
     private void dispatchTakePictureIntent() {
@@ -212,15 +179,19 @@ public class CameraActivity extends AppCompatActivity {
 
     private File createImageFile(boolean isActionView) throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = /*timeStamp +*/"TTGSecurity";
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
+        String imageFileName = /*timeStamp +*/"TTGSecurity_"+timeStamp;
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+
+        File image = new File(storageDir + File.separator + imageFileName+".jpg");
+        image.createNewFile();
+
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
 
         // Save a file: path for use with ACTION_VIEW intents
         String av = "";
