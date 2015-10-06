@@ -91,8 +91,8 @@ public class Tab1 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CameraActivity.OPEN_CAMERA_CAPTURE) {
+            Bundle extras = data.getExtras();
             if (resultCode == getActivity().RESULT_OK) {
-                Bundle extras = data.getExtras();
                 //bitmapImage = (Bitmap) extras.get(CameraActivity.GET_BITMAP);
                 imagepath = (String) extras.get(CameraActivity.GET_IMAGE_PATH);
                 //Toast.makeText(getActivity().getApplicationContext(), fromcamera+" edited", Toast.LENGTH_SHORT).show();
@@ -109,7 +109,9 @@ public class Tab1 extends Fragment {
                 }
             }
             else {
-                Toast.makeText(getActivity().getApplicationContext(), "gambar null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Error Camera Activity : "+
+                        extras.get(CameraActivity.ERROR_MESSAGE).toString(),
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

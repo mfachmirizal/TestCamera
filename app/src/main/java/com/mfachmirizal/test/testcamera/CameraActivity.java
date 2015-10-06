@@ -12,6 +12,10 @@ package com.mfachmirizal.test.testcamera;
  */
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,7 +26,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,8 +40,11 @@ public class CameraActivity extends AppCompatActivity {
     public static final String IS_ACTION_VIEW = "IS_ACTION_VIEW";
     public static final String GET_IMAGE_PATH = "imagepath";
     public static final String GET_BITMAP = "bitmapfromcamera";
+    public static final String ERROR_MESSAGE = "errMessage";
+
 
     String mCurrentPhotoPath;
+    File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,28 +58,121 @@ public class CameraActivity extends AppCompatActivity {
     }
 
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+//            Intent intentToBack=new Intent();
+//            //Bundle extras = data.getExtras();
+//            //Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            if (mCurrentPhotoPath != null) {
+//                //Toast.makeText(this,"imageBitmap null dr camera",Toast.LENGTH_SHORT).show();
+//                intentToBack.putExtra(GET_IMAGE_PATH,mCurrentPhotoPath );
+//                //intentToBack.putExtra(GET_BITMAP, imageBitmap);
+//                setResult(RESULT_OK, intentToBack);
+//            }
+//            else {
+//                setResult(RESULT_CANCELED, intentToBack);
+//            }
+//            //mImageView.setImageBitmap(imageBitmap);
+//            //Toast.makeText(this,"Oke",Toast.LENGTH_SHORT).show();
+//
+//
+//            //setResult(RESULT_OK, intentToBack);
+//        }
+//        finish();
+//    }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Intent intentToBack=new Intent();
-            //Bundle extras = data.getExtras();
-            //Bitmap imageBitmap = (Bitmap) extras.get("data");
-            if (mCurrentPhotoPath != null) {
-                //Toast.makeText(this,"imageBitmap null dr camera",Toast.LENGTH_SHORT).show();
-                intentToBack.putExtra(GET_IMAGE_PATH,mCurrentPhotoPath );
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        String errMessage = "";
+        Intent intentToBack=new Intent();
+        if (requestCode == REQUEST_TAKE_PHOTO && photoFile != null && mCurrentPhotoPath != null) // && resultCode == RESULT_OK )
+        {
+            try
+            {
+                Bitmap cameraBmp = MediaStore.Images.Media.getBitmap(
+                        this.getContentResolver(),
+                        //.mainActivity.getContentResolver(),
+                        Uri.fromFile(photoFile));
+
+                cameraBmp = ThumbnailUtils.extractThumbnail(cameraBmp, 320, 320);
+                // NOTE incredibly useful trick for cropping/resizing square
+                // http://stackoverflow.com/a/17733530/294884
+
+                Matrix m = new Matrix();
+                m.postRotate( neededRotation(photoFile));
+
+                cameraBmp = Bitmap.createBitmap(cameraBmp,
+                        0, 0, cameraBmp.getWidth(), cameraBmp.getHeight(),
+                        m, true);
+
+
+                intentToBack.putExtra(GET_IMAGE_PATH, mCurrentPhotoPath);
+                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
                 //intentToBack.putExtra(GET_BITMAP, imageBitmap);
                 setResult(RESULT_OK, intentToBack);
-            }
-            else {
+
+                //yourImageView.setImageBitmap(cameraBmp);
+
+                // to convert to bytes...
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                cameraBmp.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+                //or say cameraBmp.compress(Bitmap.CompressFormat.PNG, 0, baos);
+                //imageBytesRESULT = baos.toByteArray();
+
+            } catch (FileNotFoundException e)
+            {
+                errMessage = e.getMessage();
+                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
                 setResult(RESULT_CANCELED, intentToBack);
+                e.printStackTrace();
+                finish();
+            } catch (IOException ie)
+            {
+                errMessage = ie.getMessage();
+                intentToBack.putExtra(ERROR_MESSAGE,errMessage);
+                setResult(RESULT_CANCELED, intentToBack);
+                ie.printStackTrace();
+                finish();
             }
-            //mImageView.setImageBitmap(imageBitmap);
-            //Toast.makeText(this,"Oke",Toast.LENGTH_SHORT).show();
-
-
-            //setResult(RESULT_OK, intentToBack);
+            //return;
+        }
+        else if (photoFile == null) {
+            setResult(RESULT_CANCELED, intentToBack);
+            Toast.makeText(this,"File Poto null !",Toast.LENGTH_SHORT).show();
+        }
+        else if (mCurrentPhotoPath == null) {
+            setResult(RESULT_CANCELED, intentToBack);
+            Toast.makeText(this,"Path Poto null !",Toast.LENGTH_SHORT).show();
         }
         finish();
+    }
+
+    private int neededRotation(File ff)
+    {
+        try
+        {
+
+            ExifInterface exif = new ExifInterface(ff.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_270)
+            { return 270; }
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_180)
+            { return 180; }
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90)
+            { return 90; }
+            return 0;
+
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 /*
@@ -86,7 +188,7 @@ public class CameraActivity extends AppCompatActivity {
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            //File photoFile = null;
             try {
                 photoFile = createImageFile(isActionView);
             } catch (IOException ex) {
@@ -99,8 +201,9 @@ public class CameraActivity extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }else {
+                Log.e("photoFileKosong", "photoFileKosong, mengulang proses ambil gambar");
             }
-            Log.e("photoFileKosong","photoFileKosong, mengulang proses ambil gambar");
         }
     }
 
