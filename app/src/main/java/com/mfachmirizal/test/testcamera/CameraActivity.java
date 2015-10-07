@@ -172,7 +172,7 @@ public class CameraActivity extends AppCompatActivity {
         // Create an image file name
         String uniqString = new TetanggakuGetUniqueHashCode().getThisDeviceUniqueHashCode(this);
         String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
-        String imageFileName = uniqString+"-TTGS"+timeStamp;
+        String imageFileName = uniqString+".TTGS."+timeStamp;
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
 
