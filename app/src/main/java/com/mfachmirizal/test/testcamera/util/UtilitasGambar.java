@@ -32,6 +32,7 @@ public class UtilitasGambar {
 
     }
 
+    @Deprecated
     public Bitmap ambilBitmap(String path,int rotate) {
         File imgFile = new  File(path);
         if(imgFile.exists()){
@@ -42,12 +43,6 @@ public class UtilitasGambar {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(),options);
             myBitmap = rotateBitmap(myBitmap,rotate);
 
-//            Bitmap myBitmap = null;
-//            try {
-//                 myBitmap = getAndRotateBitmap(imgFile);
-//            } catch (IOException ioe) {
-//                ioe.printStackTrace();
-//            }
             return myBitmap;
         }
         return null;
@@ -128,12 +123,9 @@ public class UtilitasGambar {
             { return 90; }
             return 0;
 
-        } catch (FileNotFoundException e)
+        } catch (IOException xs)
         {
-            e.printStackTrace();
-        } catch (IOException xxe)
-        {
-            xxe.printStackTrace();
+            xs.printStackTrace();
         }
         return 0;
     }

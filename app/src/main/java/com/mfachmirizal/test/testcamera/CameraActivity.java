@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.mfachmirizal.test.testcamera.util.TetanggakuGetUniqueHashCode;
 import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
 
 import java.io.ByteArrayOutputStream;
@@ -140,16 +141,6 @@ public class CameraActivity extends AppCompatActivity {
         finish();
     }
 
-
-
-/*
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-*/
     private void dispatchTakePictureIntent(boolean isActionView) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -179,8 +170,9 @@ public class CameraActivity extends AppCompatActivity {
 
     private File createImageFile(boolean isActionView) throws IOException {
         // Create an image file name
+        String uniqString = new TetanggakuGetUniqueHashCode().getThisDeviceUniqueHashCode(this);
         String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
-        String imageFileName = /*timeStamp +*/"TTGSecurity_"+timeStamp;
+        String imageFileName = uniqString+"-TTGS"+timeStamp;
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
 
