@@ -1,41 +1,17 @@
 package com.mfachmirizal.test.testcamera.backgroundprocess;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-//import org.apache.http.client.ClientProtocolException;
-//import org.apache.http.client.HttpClient;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-//import org.apache.http.client.methods.HttpPostHC4;
-//
-//import org.apache.http.client.methods.HttpPostHC4;
-//import org.apache.http.entity.ContentType;
-//import org.apache.http.entity.mime.Header;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.HttpClientBuilder;
-
 import android.app.IntentService;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.text.format.DateFormat;
-import android.util.Log;
-import com.loopj.android.http.*;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mfachmirizal.test.testcamera.Tab1;
-import com.mfachmirizal.test.testcamera.util.TetanggakuHttpURLConnection;
-import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
+
+import java.io.File;
+
+import cz.msebera.android.httpclient.Header;
 
 public class UploadImageIntentService  extends IntentService{
 
@@ -105,7 +81,7 @@ public class UploadImageIntentService  extends IntentService{
 //                    return new PasswordAuthentication(LOGIN, PWD.toCharArray());
 //                }
 //            });
-            SyncHttpClient client = new SyncHttpClient();
+            AsyncHttpClient client = new AsyncHttpClient();
             client.setBasicAuth("Openbravo","openbravo");
             client.setTimeout(50);
 //            client.setBasicAuth("Openbravo","openbravo");
@@ -113,24 +89,25 @@ public class UploadImageIntentService  extends IntentService{
             params.put("gambar", new File(requestBitmapPath));
 
 
-            client.post(requestServerUrl, params, new TextHttpResponseHandler() {
+            client.post(requestServerUrl, params, new AsyncHttpResponseHandler() {
+
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    throwable.printStackTrace();
+                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                    responseMessage = "Success (" + statusCode + ") : " + new String(response);
+                    status_code = statusCode;
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                    e.printStackTrace();
                     if (statusCode == 0) {
                         responseMessage = "Gagal Terhubung Ke server, silahkan hubungi developer Tripad bila masih berlanjut";
                         status_code = statusCode;
                     }
                     else {
-                        responseMessage = "Failure. (" + statusCode + ") (" + requestServerUrl + ") : " + throwable.getMessage();
+                        responseMessage = "Failure. (" + statusCode + ") : " + e.getMessage();
                         status_code = statusCode;
                     }
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    responseMessage = "Success (" + statusCode + ") : " + responseString;
-                    status_code = statusCode;
                 }
             });
 
