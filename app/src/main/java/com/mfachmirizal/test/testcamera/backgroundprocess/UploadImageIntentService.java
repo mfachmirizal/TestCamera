@@ -44,37 +44,11 @@ public class UploadImageIntentService  extends IntentService{
         requestServerUrl = (String) extras.get(REQUEST_SERVER_URL);
 
         //upload dengan menggunakan library loopj
-        upload1(requestBitmapPath);
- 
-        //upload2
-//        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
-//        upload2(requestServerUrl,bmp,"upload");
-//        status_code = new TetanggakuHttpURLConnection().uploadFile(requestServerUrl,requestBitmapPath);
-//
-//        if (status_code != 200) {
-//            responseMessage = "Upload Error ! : "+status_code;
-//        }
-//        else {
-//            responseMessage = "Upload Gambar Berhasil !";
-//        }
-
-
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(Tab1.UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, requestBitmapPath);
-        broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);
-        broadcastIntent.putExtra(RESPONSE_STATUS_CODE, status_code);
-        sendBroadcast(broadcastIntent);
-
-    }
-
-    protected void upload1(String requestBitmapPath) {
         try {
             //AsyncHttpClient client = new AsyncHttpClient(); <-- ini untuk get
             SyncHttpClient client = new SyncHttpClient();
             client.setBasicAuth("Openbravo","openbravo");
-            client.setTimeout(50);
+            client.setTimeout(53);
             RequestParams params = new RequestParams();
             params.put("gambar", new File(requestBitmapPath));
 
@@ -101,13 +75,34 @@ public class UploadImageIntentService  extends IntentService{
                     }
                 }
             });
-
-
         }catch (Exception e) {
             e.printStackTrace();
             responseMessage = e.getMessage();
         }
+ 
+        //upload2
+//        Bitmap bmp = new UtilitasGambar().ambilBitmap(requestBitmapPath);
+//        upload2(requestServerUrl,bmp,"upload");
+//        status_code = new TetanggakuHttpURLConnection().uploadFile(requestServerUrl,requestBitmapPath);
+//
+//        if (status_code != 200) {
+//            responseMessage = "Upload Error ! : "+status_code;
+//        }
+//        else {
+//            responseMessage = "Upload Gambar Berhasil !";
+//        }
+
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Tab1.UploadImageReceiver.PROCESS_ACTION_UPLOADIMAGE_PATH);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        broadcastIntent.putExtra(RESPONSE_BITMAP_PATH, requestBitmapPath);
+        broadcastIntent.putExtra(RESPONSE_MESSAGE, responseMessage);
+        broadcastIntent.putExtra(RESPONSE_STATUS_CODE, status_code);
+        sendBroadcast(broadcastIntent);
+
     }
+
 /**/
 /*
     protected void upload2(String url,Bitmap bm,String namafile) {
