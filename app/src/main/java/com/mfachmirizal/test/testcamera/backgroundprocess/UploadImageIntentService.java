@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.mfachmirizal.test.testcamera.Tab1;
 
 import java.io.File;
@@ -37,15 +39,11 @@ public class UploadImageIntentService  extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         Bundle extras = intent.getExtras();
-
-
         requestBitmapPath = (String) extras.get(REQUEST_BITMAP_PATH);
         requestServerUrl = (String) extras.get(REQUEST_SERVER_URL);
 
-
-        //upload1
+        //upload dengan menggunakan library loopj
         upload1(requestBitmapPath);
  
         //upload2
@@ -73,32 +71,25 @@ public class UploadImageIntentService  extends IntentService{
 
     protected void upload1(String requestBitmapPath) {
         try {
-//            Authenticator.setDefault(new Authenticator() {
-//                @Override
-//                protected PasswordAuthentication getPasswordAuthentication() {
-//                    String LOGIN = "Openbravo";
-//                    String PWD = "openbravo";
-//                    return new PasswordAuthentication(LOGIN, PWD.toCharArray());
-//                }
-//            });
-            AsyncHttpClient client = new AsyncHttpClient();
+            //AsyncHttpClient client = new AsyncHttpClient(); <-- ini untuk get
+            SyncHttpClient client = new SyncHttpClient();
             client.setBasicAuth("Openbravo","openbravo");
             client.setTimeout(50);
-//            client.setBasicAuth("Openbravo","openbravo");
             RequestParams params = new RequestParams();
             params.put("gambar", new File(requestBitmapPath));
 
 
-            client.post(requestServerUrl, params, new AsyncHttpResponseHandler() {
+            client.post(requestServerUrl, params, new TextHttpResponseHandler() {
+
 
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                    responseMessage = "Success (" + statusCode + ") : " + new String(response);
+                public void onSuccess(int statusCode,Header[] headers, String response) {
+                    responseMessage = "Success : " + response;
                     status_code = statusCode;
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
                     e.printStackTrace();
                     if (statusCode == 0) {
                         responseMessage = "Gagal Terhubung Ke server, silahkan hubungi developer Tripad bila masih berlanjut";
