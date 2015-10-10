@@ -10,6 +10,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mfachmirizal.test.testcamera.Tab1;
+import com.mfachmirizal.test.testcamera.util.TetanggakuGetUniqueHashCode;
 
 import java.io.File;
 
@@ -50,6 +51,7 @@ public class UploadImageIntentService  extends IntentService{
             client.setBasicAuth("Openbravo","openbravo");
             client.setTimeout(53);
             RequestParams params = new RequestParams();
+            params.put("device_id",new TetanggakuGetUniqueHashCode().getThisDeviceUniqueHashCode(this));
             params.put("gambar", new File(requestBitmapPath));
 
 
