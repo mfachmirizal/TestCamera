@@ -1,15 +1,5 @@
 package com.mfachmirizal.test.testcamera;
 
-/**
- * private android.hardware.Camera mCameraDevice;
-
- try {
- mCameraDevice = android.hardware.Camera.open();
- } catch (RuntimeException e) {
- Log.e(TAG, "fail to connect Camera", e);
- // Throw exception
- }
- */
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -61,6 +51,7 @@ public class CameraActivity extends AppCompatActivity {
         boolean isActionView = intent.getBooleanExtra(IS_ACTION_VIEW, false);
 
         dispatchTakePictureIntent(isActionView);
+        //ini branch laptop
     }
 
 
