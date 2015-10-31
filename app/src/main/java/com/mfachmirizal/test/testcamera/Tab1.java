@@ -77,7 +77,7 @@ public class Tab1 extends Fragment {
                     uploadStateWidget(true);
                     Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
                     uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
-                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.168:8585/obdev/ws/com.tripad.tetanggaku.keamananku.uploadimage");
+                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.168:8585/obdev1531/ws/com.tripad.tetanggaku.keamananku.uploadimage");
                     //uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.10:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
 
                     getActivity().getApplicationContext().startService(uploadimageIntent);
@@ -172,3 +172,16 @@ public class Tab1 extends Fragment {
 
 
 }
+
+/*
+*  WifiManager mWifiManager = (WifiManager)
+                                     getSystemService(Context.WIFI_SERVICE);
+ WifiInfo mWifiInfo = mWifiManager.getConnectionInfo();
+ Log.e("IP in Mask Integer", mWifiInfo.getIpAddress()+"");
+ Log.e("IP Address", intToIP(mWifiInfo.getIpAddress())+"");
+
+public String intToIP(int i) {
+       return (( i & 0xFF)+ "."+((i >> 8 ) & 0xFF)+
+                          "."+((i >> 16 ) & 0xFF)+"."+((i >> 24 ) & 0xFF));
+}
+*/
