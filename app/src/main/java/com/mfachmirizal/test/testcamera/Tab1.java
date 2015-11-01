@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.loopj.android.http.*;
 import com.mfachmirizal.test.testcamera.backgroundprocess.UploadImageIntentService;
+import com.mfachmirizal.test.testcamera.util.QuickstartPreferences;
 import com.mfachmirizal.test.testcamera.util.UtilitasGambar;
 import java.io.File;
 /**
@@ -73,14 +76,23 @@ public class Tab1 extends Fragment {
         tombolUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imagepath != null) {
-                    uploadStateWidget(true);
-                    Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
-                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
-                    uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.168:8585/obdev1531/ws/com.tripad.tetanggaku.keamananku.uploadimage");
-                    //uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.10:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                String obname = sharedPreferences.getString(QuickstartPreferences.OB_NAME, "");
+                String serverip = sharedPreferences.getString(QuickstartPreferences.IP_SERVER, "");
 
-                    getActivity().getApplicationContext().startService(uploadimageIntent);
+                if (imagepath != null) {
+                    if (serverip != "" && obname != "") {
+                        uploadStateWidget(true);
+                        Intent uploadimageIntent = new Intent(getActivity().getApplicationContext(), UploadImageIntentService.class);
+                        uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_BITMAP_PATH, imagepath);
+                        uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://"+serverip+"/"+obname+"/ws/com.tripad.tetanggaku.keamananku.uploadimage");
+                        //uploadimageIntent.putExtra(UploadImageIntentService.REQUEST_SERVER_URL, "http://192.168.1.10:8585/obdevpancaran/ws/com.tripad.tetanggaku.security.mobile.uploadimage");
+
+                        getActivity().getApplicationContext().startService(uploadimageIntent);
+                    }
+                    else {
+                        Toast.makeText(getActivity().getApplicationContext(),"Server Belum di set !",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     Toast.makeText(getActivity().getApplicationContext(),"Image kosong !",Toast.LENGTH_SHORT).show();
@@ -139,11 +151,11 @@ public class Tab1 extends Fragment {
             if (reponseStatusCode == 200) {
                 String responseBitmapPath = (String) extras.get(UploadImageIntentService.RESPONSE_BITMAP_PATH);
                 thumbImgUpload.setImageBitmap(new UtilitasGambar().ambilBitmap(responseBitmapPath, 0));
-                Toast.makeText(getActivity().getApplicationContext(),reponseMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(context,reponseMessage, Toast.LENGTH_LONG).show();
                 currentPhotoFile.delete();
             }
             else {
-                Toast.makeText(getActivity().getApplicationContext(), "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Error : "+reponseMessage, Toast.LENGTH_LONG).show();
             }
             uploadStateWidget(false);
         }
@@ -151,8 +163,10 @@ public class Tab1 extends Fragment {
 
     }
 
+
     @Override
     public void onDestroy() {
+        Toast.makeText(getActivity().getApplicationContext(), "Jalankan on destroy", Toast.LENGTH_SHORT).show();
         if (currentPhotoFile != null) if (currentPhotoFile.exists()) currentPhotoFile.delete();
         getActivity().getApplicationContext().unregisterReceiver(receiver);
         super.onDestroy();

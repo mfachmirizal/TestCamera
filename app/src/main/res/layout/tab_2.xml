@@ -4,13 +4,13 @@
     android:layout_height="match_parent">
 
 
-    <com.loopj.android.image.SmartImageView
-        android:id="@+id/siv_gambar"
-        android:layout_width="200dp"
-        android:layout_height="350dp"
-        android:background="@android:drawable/bottom_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+    <!--<com.loopj.android.image.SmartImageView-->
+        <!--android:id="@+id/siv_gambar"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="350dp"-->
+        <!--android:background="@android:drawable/bottom_bar"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"/>-->
 
 
 </RelativeLayout>

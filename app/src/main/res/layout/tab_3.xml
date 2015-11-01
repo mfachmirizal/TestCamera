@@ -74,19 +74,28 @@
                         android:id="@+id/tVIPSeparator"
                         android:padding="1dp"/>
 
-                    <Spinner
+                    <EditText
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="aplikasi ob nya"
-                        android:id="@+id/spinIP"
+                        android:hint="server IP"
+                        android:id="@+id/edIP"
                         android:layout_toRightOf="@+id/tVIPSeparator"/>
+
+                    <!--<Spinner-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:hint="aplikasi ob nya"-->
+                        <!--android:id="@+id/spinIP"-->
+                        <!--android:layout_toRightOf="@+id/tVIPSeparator"/>-->
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     >
 
 
@@ -94,9 +103,17 @@
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
                         android:text="Set"
                         android:id="@+id/butSet"
+                        android:padding="1dp"/>
+
+                    <Button
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Debug SRef"
+                        android:layout_toRightOf="@+id/butSet"
+                        android:id="@+id/butTest"
                         android:padding="1dp"/>
 
 
